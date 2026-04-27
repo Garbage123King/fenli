@@ -1,0 +1,661 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-dark: #1a1a2e;
+  --bg-medium: #16213e;
+  --bg-light: #0f3460;
+  --accent: #e94560;
+  --accent-gold: #f5c842;
+  --text: #eee;
+  --text-dim: #888;
+  --border: #333;
+  --cost1: #9e9e9e;
+  --cost2: #4caf50;
+  --cost3: #2196f3;
+  --cost4: #9c27b0;
+  --cost5: #ff9800;
+  --cell-size: 60px;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text);
+  font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.hidden { display: none !important; }
+
+.screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* === 开始界面 === */
+.start-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.game-title {
+  font-size: 3em;
+  color: var(--accent-gold);
+  text-shadow: 0 0 20px rgba(245, 200, 66, 0.5);
+  margin-bottom: 10px;
+}
+
+.game-subtitle {
+  font-size: 1.2em;
+  color: var(--text-dim);
+  margin-bottom: 30px;
+}
+
+#player-name {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 20px;
+  font-size: 1.1em;
+  background: var(--bg-medium);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  width: 250px;
+  text-align: center;
+}
+
+#player-name:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+
+.btn {
+  padding: 10px 24px;
+  font-size: 1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  font-size: 1.2em;
+  padding: 12px 40px;
+}
+
+.btn-action {
+  background: var(--bg-light);
+  color: var(--text);
+  font-size: 0.9em;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+}
+
+.btn-action:hover { border-color: var(--accent-gold); }
+
+.btn-battle {
+  background: var(--accent);
+  color: white;
+  font-size: 0.95em;
+  padding: 8px 20px;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+.btn-quick {
+  background: #1565c0;
+  color: white;
+  font-size: 0.95em;
+  padding: 8px 16px;
+}
+
+.btn-small {
+  background: var(--bg-light);
+  color: var(--text);
+  font-size: 0.8em;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(233, 69, 96, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.8); }
+}
+
+/* === 游戏界面 === */
+#game-screen {
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 8px;
+}
+
+/* === 顶部信息栏 === */
+#top-bar {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 8px 16px;
+  background: var(--bg-medium);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.info-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-label {
+  color: var(--text-dim);
+  font-size: 0.85em;
+}
+
+.info-value {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.info-value.hp { color: #4caf50; }
+.info-value.gold { color: var(--accent-gold); }
+
+.xp-bar-container {
+  width: 80px;
+  height: 14px;
+  background: var(--bg-dark);
+  border-radius: 7px;
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #5c6bc0, #7e57c2);
+  border-radius: 7px;
+  transition: width 0.3s;
+}
+
+.xp-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.65em;
+  color: white;
+  text-shadow: 0 0 2px black;
+}
+
+/* === 棋盘 === */
+#board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.board-label {
+  font-size: 0.85em;
+  padding: 2px 12px;
+  border-radius: 4px;
+  margin: 2px 0;
+}
+
+.enemy-label {
+  background: rgba(233, 69, 96, 0.3);
+  color: var(--accent);
+}
+
+.player-label {
+  background: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, var(--cell-size));
+  grid-template-rows: repeat(8, var(--cell-size));
+  gap: 2px;
+  background: var(--bg-medium);
+  padding: 4px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cell.enemy-zone {
+  background: rgba(233, 69, 96, 0.08);
+}
+
+.cell.player-zone {
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.cell.player-zone:hover {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.cell.highlight {
+  background: rgba(245, 200, 66, 0.3) !important;
+  outline: 2px solid var(--accent-gold);
+}
+
+.cell.selected {
+  outline: 2px solid var(--accent-gold);
+}
+
+/* === 怪物方块 === */
+.monster-block {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: transform 0.1s, box-shadow 0.1s;
+  user-select: none;
+}
+
+.monster-block:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.monster-block.dragging {
+  opacity: 0.5;
+}
+
+.monster-block .star {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 0.6em;
+  color: var(--accent-gold);
+  text-shadow: 0 0 3px rgba(0,0,0,0.8);
+}
+
+.monster-block .star.star-2::after { content: '★★'; }
+.monster-block .star.star-3::after { content: '★★★'; }
+
+.monster-block .name-text {
+  font-size: 0.5em;
+  color: white;
+  text-shadow: 0 0 3px rgba(0,0,0,0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 44px;
+  text-align: center;
+}
+
+.monster-block .hp-bar {
+  position: absolute;
+  bottom: 1px;
+  left: 3px;
+  right: 3px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+}
+
+.monster-block .hp-fill {
+  height: 100%;
+  background: #4caf50;
+  border-radius: 2px;
+  transition: width 0.2s;
+}
+
+.monster-block .mana-bar {
+  position: absolute;
+  bottom: 6px;
+  left: 3px;
+  right: 3px;
+  height: 3px;
+  background: #333;
+  border-radius: 2px;
+}
+
+.monster-block .mana-fill {
+  height: 100%;
+  background: #2196f3;
+  border-radius: 2px;
+  transition: width 0.2s;
+}
+
+.monster-block .cost-badge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55em;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 2px rgba(0,0,0,0.8);
+}
+
+/* === 备战区 === */
+#bench-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.section-label {
+  font-size: 0.85em;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.bench {
+  display: grid;
+  grid-template-columns: repeat(9, var(--cell-size));
+  gap: 4px;
+  background: var(--bg-medium);
+  padding: 6px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+}
+
+.bench-slot {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bench-slot:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.bench-slot.highlight {
+  background: rgba(245, 200, 66, 0.3) !important;
+  outline: 2px solid var(--accent-gold);
+}
+
+/* === 商店 === */
+#shop-container {
+  background: var(--bg-medium);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  width: 100%;
+  max-width: 600px;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.shop-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.shop {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.shop-card {
+  background: var(--bg-dark);
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.shop-card:hover {
+  border-color: var(--accent-gold);
+  background: rgba(255,255,255,0.08);
+}
+
+.shop-card.sold {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.shop-card .card-name {
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+.shop-card .card-title {
+  font-size: 0.6em;
+  color: var(--text-dim);
+}
+
+.shop-card .card-cost {
+  font-size: 0.7em;
+  color: var(--accent-gold);
+  font-weight: bold;
+}
+
+.shop-card .card-block {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+/* 费用颜色 */
+.cost-1 { border-color: var(--cost1); }
+.cost-2 { border-color: var(--cost2); }
+.cost-3 { border-color: var(--cost3); }
+.cost-4 { border-color: var(--cost4); }
+.cost-5 { border-color: var(--cost5); }
+
+.cost-badge-1 { background: var(--cost1); }
+.cost-badge-2 { background: var(--cost2); }
+.cost-badge-3 { background: var(--cost3); }
+.cost-badge-4 { background: var(--cost4); }
+.cost-badge-5 { background: var(--cost5); }
+
+/* === 提示框 === */
+.tooltip {
+  position: fixed;
+  background: var(--bg-dark);
+  border: 1px solid var(--accent-gold);
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: 280px;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.tooltip .tt-name {
+  font-weight: bold;
+  color: var(--accent-gold);
+  font-size: 1em;
+}
+
+.tooltip .tt-title {
+  color: var(--text-dim);
+  font-size: 0.8em;
+  margin-bottom: 6px;
+}
+
+.tooltip .tt-stats {
+  font-size: 0.8em;
+  line-height: 1.6;
+}
+
+.tooltip .tt-stats span {
+  color: var(--accent-gold);
+}
+
+.tooltip .tt-skill {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.tooltip .tt-skill-name {
+  color: #64b5f6;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+.tooltip .tt-skill-desc {
+  color: var(--text-dim);
+  font-size: 0.75em;
+  margin-top: 2px;
+}
+
+/* === 战斗日志 === */
+#battle-log {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-medium);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+  z-index: 500;
+  text-align: center;
+}
+
+#battle-log h2 {
+  color: var(--accent-gold);
+  margin-bottom: 10px;
+}
+
+#battle-log-content p {
+  margin: 4px 0;
+  font-size: 0.9em;
+}
+
+/* === 战斗覆盖层 === */
+#battle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#battle-canvas {
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-medium);
+}
+
+#battle-controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+/* === 游戏结束 === */
+.gameover-container {
+  text-align: center;
+  padding: 40px;
+}
+
+#gameover-title {
+  font-size: 2.5em;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+#gameover-message {
+  font-size: 1.2em;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+/* === 拖拽 === */
+.drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.8;
+  transform: scale(1.2);
+}
+
+/* === 伤害飘字 === */
+.damage-float {
+  position: absolute;
+  font-weight: bold;
+  font-size: 0.8em;
+  pointer-events: none;
+  animation: floatUp 1s ease-out forwards;
+  z-index: 100;
+}
+
+.damage-physical { color: #ff5722; }
+.damage-magic { color: #64b5f6; }
+.damage-heal { color: #4caf50; }
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* === 响应式 === */
+@media (max-width: 700px) {
+  :root { --cell-size: 44px; }
+  .board { gap: 1px; }
+  .bench { grid-template-columns: repeat(9, var(--cell-size)); gap: 2px; }
+  .shop { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  #top-bar { gap: 12px; }
+  .info-value { font-size: 0.95em; }
+}

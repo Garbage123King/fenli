@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自走棋</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 开始界面 -->
+  <div id="start-screen" class="screen">
+    <div class="start-container">
+      <h1 class="game-title">⚔️ 自走棋 ⚔️</h1>
+      <p class="game-subtitle">策略对战</p>
+      <input type="text" id="player-name" placeholder="输入玩家名称" maxlength="12">
+      <button id="btn-start" class="btn btn-primary">开始游戏</button>
+    </div>
+  </div>
+
+  <!-- 游戏界面 -->
+  <div id="game-screen" class="screen hidden">
+    <!-- 顶部信息栏 -->
+    <div id="top-bar">
+      <div class="info-group">
+        <span class="info-label">回合</span>
+        <span id="round-num" class="info-value">0</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">生命</span>
+        <span id="hp-value" class="info-value hp">100</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">等级</span>
+        <span id="level-value" class="info-value">1</span>
+        <div class="xp-bar-container">
+          <div id="xp-bar" class="xp-bar"></div>
+          <span id="xp-text" class="xp-text">0/2</span>
+        </div>
+      </div>
+      <div class="info-group">
+        <span class="info-label">金币</span>
+        <span id="gold-value" class="info-value gold">10</span>
+      </div>
+      <div class="info-group">
+        <span class="info-label">连胜/败</span>
+        <span id="streak-value" class="info-value">0</span>
+      </div>
+    </div>
+
+    <!-- 战斗日志 -->
+    <div id="battle-log" class="hidden">
+      <div id="battle-log-content"></div>
+      <button id="btn-close-log" class="btn btn-small">关闭</button>
+    </div>
+
+    <!-- 棋盘区域 -->
+    <div id="board-container">
+      <!-- 敌方区域标签 -->
+      <div class="board-label enemy-label">敌方</div>
+      <div id="board" class="board">
+        <!-- 8x8棋盘由JS生成 -->
+      </div>
+      <!-- 玩家区域标签 -->
+      <div class="board-label player-label">我方</div>
+    </div>
+
+    <!-- 备战区 -->
+    <div id="bench-container">
+      <div class="section-label">备战区</div>
+      <div id="bench" class="bench">
+        <!-- 9格备战区由JS生成 -->
+      </div>
+    </div>
+
+    <!-- 商店区域 -->
+    <div id="shop-container">
+      <div class="shop-header">
+        <span class="section-label">商店</span>
+        <div class="shop-actions">
+          <button id="btn-refresh" class="btn btn-action" title="刷新商店 (D) - 2金币">🔄 D</button>
+          <button id="btn-xp" class="btn btn-action" title="购买经验 (F) - 4金币加4经验">⬆️ F</button>
+          <button id="btn-battle" class="btn btn-battle" title="开始战斗">⚔️ 开战</button>
+          <button id="btn-quick-battle" class="btn btn-quick" title="快速战斗（无动画）">⚡ 速战</button>
+        </div>
+      </div>
+      <div id="shop" class="shop">
+        <!-- 5个商店格子由JS生成 -->
+      </div>
+    </div>
+
+    <!-- 怪物信息提示 -->
+    <div id="tooltip" class="tooltip hidden"></div>
+  </div>
+
+  <!-- 游戏结束界面 -->
+  <div id="gameover-screen" class="screen hidden">
+    <div class="gameover-container">
+      <h1 id="gameover-title">游戏结束</h1>
+      <p id="gameover-message"></p>
+      <button id="btn-restart" class="btn btn-primary">重新开始</button>
+    </div>
+  </div>
+
+  <!-- 战斗动画层 -->
+  <div id="battle-overlay" class="hidden">
+    <canvas id="battle-canvas"></canvas>
+    <div id="battle-controls">
+      <button id="btn-speed" class="btn btn-small">1x</button>
+      <button id="btn-skip" class="btn btn-small">跳过</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
